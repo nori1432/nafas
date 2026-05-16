@@ -78,6 +78,12 @@ export const IcoGlobe = base(
 export const IcoChevronRight = base('M8 4l5 6-5 6')
 export const IcoX = base('M4 4l12 12M16 4L4 16')
 export const IcoPlus = base('M10 3v14M3 10h14')
+export const IcoSmartphone = base(
+  <><rect x="5" y="1" width="10" height="18" rx="2.5"/><path d="M8 4.5h4"/><path d="M9 15.5h2"/></>
+)
+export const IcoDownload = base(
+  <><path d="M10 3v11"/><path d="M5.5 9.5l4.5 4.5 4.5-4.5"/><path d="M3 17h14"/></>
+)
 export const IcoPencil = base('M3 17l2-5L14 3l3 3L8 15l-5 2zM12 5l3 3')
 export const IcoTrash = base(
   <><path d="M3 6h14M8 6V4h4v2M6 6l1 12h6l1-12"/></>

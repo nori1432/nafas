@@ -4,7 +4,7 @@ import { useLang, useT } from '../store/lang'
 import {
   IcoDashboard, IcoBed, IcoWrench, IcoCalendar,
   IcoHeart, IcoFlag, IcoChart, IcoBuilding,
-  IcoShield, IcoGlobe,
+  IcoShield, IcoGlobe, IcoHospital, IcoSmartphone, IcoDownload,
 } from '../components/Icon'
 
 const FEATURES = [
@@ -86,12 +86,20 @@ const WHO = [
   },
 ]
 
+const APP_FEATURES = [
+  { Icon: IcoCalendar,  en: 'Book Appointments',      ar: 'حجز المواعيد'          },
+  { Icon: IcoHeart,     en: 'Blood & Organ Donation', ar: 'التبرع بالدم والأعضاء' },
+  { Icon: IcoFlag,      en: 'File Complaints',        ar: 'تقديم الشكاوى'         },
+  { Icon: IcoHospital,  en: 'Browse Hospitals',       ar: 'تصفح المستشفيات'       },
+]
+
 export default function Landing() {
   const { lang, toggle } = useLang()
   const t = useT()
   const nav = useNavigate()
   const dir = lang === 'ar' ? 'rtl' : 'ltr'
   const featuresRef = useRef<HTMLElement>(null)
+  const mobileRef = useRef<HTMLElement>(null)
 
   const ff = lang === 'ar' ? "'Cairo', sans-serif" : "'Inter', sans-serif"
 
@@ -252,6 +260,18 @@ export default function Landing() {
               }}>
               {t('Sign In', 'تسجيل الدخول')}
             </button>
+            <button
+              onClick={() => scrollTo(mobileRef)}
+              style={{
+                padding: '13px 20px', borderRadius: 9,
+                border: '1px solid rgba(255,255,255,0.09)',
+                background: 'transparent',
+                color: 'rgba(255,255,255,0.48)', fontWeight: 600, fontSize: 13,
+                cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 7,
+              }}>
+              <IcoSmartphone size={14} />
+              {t('Mobile App', 'تطبيق الجوال')}
+            </button>
           </div>
 
           {/* Stats */}
@@ -357,6 +377,218 @@ export default function Landing() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ── MOBILE APP ──────────────────────────────────────── */}
+      <section ref={mobileRef} style={{
+        padding: 'clamp(80px, 10vw, 120px) clamp(20px, 5vw, 80px)',
+        background: '#0d0d0b',
+        position: 'relative', overflow: 'hidden',
+      }}>
+        <div aria-hidden style={{
+          position: 'absolute',
+          top: '40%', ...(lang === 'ar' ? { right: '5%' } : { left: '5%' }),
+          transform: 'translateY(-50%)',
+          width: 450, height: 450,
+          background: 'radial-gradient(circle, rgba(234,88,12,0.1) 0%, transparent 65%)',
+          pointerEvents: 'none',
+        }} />
+        <div aria-hidden style={{
+          position: 'absolute',
+          bottom: 0, ...(lang === 'ar' ? { left: '15%' } : { right: '15%' }),
+          width: 300, height: 300,
+          background: 'radial-gradient(circle, rgba(234,88,12,0.06) 0%, transparent 65%)',
+          pointerEvents: 'none',
+        }} />
+
+        <div style={{
+          maxWidth: 1100, margin: '0 auto',
+          display: 'flex', alignItems: 'center',
+          gap: 'clamp(40px, 7vw, 90px)',
+          flexWrap: 'wrap',
+          flexDirection: lang === 'ar' ? 'row-reverse' : 'row',
+          position: 'relative', zIndex: 1,
+        }}>
+
+          {/* ── Text side ── */}
+          <div style={{ flex: '1 1 380px' }}>
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              padding: '5px 14px', borderRadius: 99,
+              border: '1px solid rgba(234,88,12,0.35)',
+              background: 'rgba(234,88,12,0.08)',
+              marginBottom: 28,
+            }}>
+              <IcoSmartphone size={12} style={{ color: '#ea580c' }} />
+              <span style={{ fontSize: 11, fontWeight: 700, color: '#ea580c', letterSpacing: '1.5px', textTransform: 'uppercase' }}>
+                {lang === 'ar' ? 'تطبيق الجوال' : 'Mobile App'}
+              </span>
+            </div>
+
+            <h2 style={{
+              fontSize: 'clamp(32px, 4.5vw, 54px)',
+              fontWeight: 900, color: '#fff',
+              lineHeight: 1.08, letterSpacing: -2,
+              margin: '0 0 20px', fontFamily: ff,
+            }}>
+              {lang === 'ar'
+                ? <>{lang === 'ar' ? 'نَفَس' : 'NAFAS'}<br /><span style={{ color: 'var(--accent)' }}>{lang === 'ar' ? 'في جيبك' : 'in Your Pocket'}</span></>
+                : <>NAFAS<br /><span style={{ color: 'var(--accent)' }}>in Your Pocket</span></>}
+            </h2>
+
+            <p style={{
+              fontSize: 15, color: 'rgba(255,255,255,0.42)',
+              lineHeight: 1.78, margin: '0 0 36px', maxWidth: 420, fontFamily: ff,
+            }}>
+              {lang === 'ar'
+                ? 'وصّل المواطنين بالمنظومة الصحية — احجز مواعيدك، تبرّع بالدم والأعضاء، تابع احتياجات المستشفيات، وابلغ عن شكاواك من هاتفك.'
+                : "Connecting citizens to Algeria's healthcare ecosystem — book appointments, donate blood, track hospital needs, and file complaints, all from your phone."}
+            </p>
+
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 9, marginBottom: 40 }}>
+              {APP_FEATURES.map(f => (
+                <div key={f.en} style={{
+                  display: 'flex', alignItems: 'center', gap: 7,
+                  padding: '7px 13px', borderRadius: 99,
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  color: 'var(--accent)',
+                }}>
+                  <f.Icon size={12} />
+                  <span style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.65)', fontFamily: ff }}>
+                    {lang === 'ar' ? f.ar : f.en}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: lang === 'ar' ? 'flex-end' : 'flex-start', gap: 12 }}>
+              <a
+                href="/nafas.apk"
+                download="NAFAS.apk"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 10,
+                  padding: '15px 30px', borderRadius: 13,
+                  background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+                  textDecoration: 'none', color: '#fff',
+                  fontWeight: 700, fontSize: 15, fontFamily: ff,
+                  boxShadow: '0 8px 32px rgba(234,88,12,0.4)',
+                  transition: 'transform 0.15s, box-shadow 0.15s',
+                }}
+                onMouseEnter={e => {
+                  const el = e.currentTarget as HTMLAnchorElement
+                  el.style.transform = 'translateY(-2px)'
+                  el.style.boxShadow = '0 14px 40px rgba(234,88,12,0.55)'
+                }}
+                onMouseLeave={e => {
+                  const el = e.currentTarget as HTMLAnchorElement
+                  el.style.transform = ''
+                  el.style.boxShadow = '0 8px 32px rgba(234,88,12,0.4)'
+                }}
+              >
+                <IcoDownload size={18} />
+                {lang === 'ar' ? 'تحميل لأندرويد' : 'Download for Android'}
+              </a>
+              <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.22)' }}>
+                {lang === 'ar' ? 'أندرويد 8.0+  ·  26.9 MB' : 'Android 8.0+  ·  v1.0  ·  26.9 MB'}
+              </span>
+            </div>
+          </div>
+
+          {/* ── Phone mockup ── */}
+          <div style={{ flex: '0 0 auto', display: 'flex', justifyContent: 'center', position: 'relative' }}>
+            <div aria-hidden style={{
+              position: 'absolute', inset: -40,
+              background: 'radial-gradient(ellipse, rgba(234,88,12,0.13) 0%, transparent 65%)',
+              filter: 'blur(18px)',
+              pointerEvents: 'none',
+            }} />
+            <div style={{
+              width: 232, height: 476,
+              background: 'linear-gradient(175deg, #1e1e1b 0%, #111110 60%, #0e0e0c 100%)',
+              borderRadius: 44,
+              border: '1.5px solid rgba(255,255,255,0.1)',
+              padding: '0 0 20px',
+              boxShadow: '0 70px 100px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.1)',
+              position: 'relative', overflow: 'hidden',
+              display: 'flex', flexDirection: 'column',
+            }}>
+              {/* Buttons */}
+              <div aria-hidden style={{ position: 'absolute', right: -2, top: 110, width: 3, height: 50, background: 'rgba(255,255,255,0.1)', borderRadius: '0 3px 3px 0' }} />
+              <div aria-hidden style={{ position: 'absolute', left: -2, top: 100, width: 3, height: 32, background: 'rgba(255,255,255,0.08)', borderRadius: '3px 0 0 3px' }} />
+              <div aria-hidden style={{ position: 'absolute', left: -2, top: 142, width: 3, height: 32, background: 'rgba(255,255,255,0.08)', borderRadius: '3px 0 0 3px' }} />
+              {/* Status bar */}
+              <div style={{
+                height: 44, background: 'rgba(0,0,0,0.25)',
+                display: 'flex', alignItems: 'flex-end',
+                padding: '0 18px 8px', justifyContent: 'space-between',
+                position: 'relative',
+              }}>
+                <div style={{ position: 'absolute', top: 8, left: '50%', transform: 'translateX(-50%)', width: 88, height: 22, background: '#0a0a09', borderRadius: 13 }} />
+                <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,0.5)', zIndex: 1 }}>9:41</span>
+                <div style={{ display: 'flex', gap: 3, alignItems: 'center', zIndex: 1 }}>
+                  <div style={{ display: 'flex', gap: 1.5, alignItems: 'flex-end' }}>
+                    {[4, 6, 8, 10].map((h, i) => (
+                      <div key={i} style={{ width: 2.5, height: h, background: i >= 2 ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.18)', borderRadius: 1 }} />
+                    ))}
+                  </div>
+                  <div style={{ marginLeft: 3, width: 16, height: 9, borderRadius: 2.5, border: '1px solid rgba(255,255,255,0.35)', position: 'relative', display: 'flex', alignItems: 'center', padding: '0 1px' }}>
+                    <div style={{ width: '70%', height: '80%', background: 'rgba(74,222,128,0.85)', borderRadius: 1.5 }} />
+                    <div style={{ position: 'absolute', right: -3, top: '50%', transform: 'translateY(-50%)', width: 2, height: 5, background: 'rgba(255,255,255,0.22)', borderRadius: 1 }} />
+                  </div>
+                </div>
+              </div>
+              {/* Screen */}
+              <div style={{ flex: 1, padding: '14px 14px 0', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                    <div style={{ width: 28, height: 28, borderRadius: 8, background: 'linear-gradient(135deg, #f97316, #ea580c)', display: 'grid', placeItems: 'center' }}>
+                      <span style={{ fontWeight: 900, fontSize: 14, color: '#fff' }}>N</span>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 12, fontWeight: 800, color: '#fff' }}>NAFAS</div>
+                      <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)' }}>{lang === 'ar' ? 'الرعاية الصحية' : 'Healthcare'}</div>
+                    </div>
+                  </div>
+                  <div style={{ width: 28, height: 28, borderRadius: 99, background: 'rgba(255,255,255,0.07)', display: 'grid', placeItems: 'center' }}>
+                    <div style={{ width: 7, height: 7, borderRadius: 99, background: 'rgba(255,255,255,0.3)' }} />
+                  </div>
+                </div>
+                <div style={{
+                  borderRadius: 12,
+                  background: 'linear-gradient(135deg, rgba(234,88,12,0.22) 0%, rgba(234,88,12,0.07) 100%)',
+                  border: '1px solid rgba(234,88,12,0.18)',
+                  padding: '11px 13px',
+                }}>
+                  <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', marginBottom: 3 }}>{lang === 'ar' ? 'مرحباً بك' : 'Welcome back'}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: '#fff' }}>{lang === 'ar' ? 'كيف يمكننا مساعدتك؟' : 'How can we help you?'}</div>
+                </div>
+                {APP_FEATURES.map((f, i) => (
+                  <div key={i} style={{
+                    display: 'flex', alignItems: 'center', gap: 9,
+                    padding: '8px 10px', borderRadius: 10,
+                    background: 'rgba(255,255,255,0.04)',
+                    border: '1px solid rgba(255,255,255,0.055)',
+                    color: '#ea580c',
+                  }}>
+                    <div style={{ width: 26, height: 26, borderRadius: 7, background: 'rgba(234,88,12,0.14)', display: 'grid', placeItems: 'center', flexShrink: 0 }}>
+                      <f.Icon size={12} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.8)' }}>{lang === 'ar' ? f.ar : f.en}</div>
+                      <div style={{ width: `${50 + i * 12}%`, height: 2.5, background: 'rgba(255,255,255,0.07)', borderRadius: 2, marginTop: 3 }} />
+                    </div>
+                    <div style={{ width: 5, height: 5, borderRadius: 99, background: 'rgba(255,255,255,0.12)' }} />
+                  </div>
+                ))}
+              </div>
+              {/* Home indicator */}
+              <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 10 }}>
+                <div style={{ width: 88, height: 4, background: 'rgba(255,255,255,0.2)', borderRadius: 2 }} />
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
