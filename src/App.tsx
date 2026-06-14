@@ -11,7 +11,7 @@ import BedManagement from './pages/BedManagement'
 import Appointments from './pages/Appointments'
 import Maintenance from './pages/Maintenance'
 import Donations from './pages/Donations'
-import Complaints from './pages/Complaints'
+import Community from './pages/Community'
 import Reports from './pages/Reports'
 import Settings from './pages/Settings'
 import Subscriptions from './pages/Subscriptions'
@@ -75,7 +75,7 @@ export default function App() {
         <Route path="/appointments" element={<Appointments />} />
         <Route path="/maintenance" element={<Maintenance />} />
         <Route path="/donations" element={<Donations />} />
-        <Route path="/complaints" element={<Complaints />} />
+        <Route path="/community" element={<Community />} />
         <Route path="/reports" element={<Reports />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/subscriptions" element={<Subscriptions />} />

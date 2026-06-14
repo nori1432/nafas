@@ -34,9 +34,9 @@ export default function HospDashboard() {
           <div className="label">Total Staff</div>
           <div className="value">{d.staff_count ?? '—'}</div>
         </div>
-        <div className="card kpi accent">
-          <div className="label">Open Complaints</div>
-          <div className="value">{d.open_complaints ?? '—'}</div>
+        <div className="card kpi" style={{ borderTop: '3px solid #3B82F6' }}>
+          <div className="label">Community Questions</div>
+          <div className="value">{d.open_community_questions ?? '—'}</div>
         </div>
         <div className="card kpi">
           <div className="label">Faulty Equipment</div>

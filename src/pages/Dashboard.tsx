@@ -6,7 +6,7 @@ import {
 } from 'recharts'
 import { api } from '../lib/api'
 import { useT, useLang } from '../store/lang'
-import { IcoHospital, IcoBed, IcoChart, IcoHeart, IcoFlag, IcoWrench, IcoBadge, IcoCheck } from '../components/Icon'
+import { IcoHospital, IcoBed, IcoChart, IcoHeart, IcoWrench, IcoBadge, IcoCheck, IcoCommunity } from '../components/Icon'
 
 const COLORS = ['#27AE60', '#F39C12', '#E74C3C', '#2563eb', '#8b5cf6']
 
@@ -80,7 +80,7 @@ export default function Dashboard() {
   ]
 
   const statusData = [
-    { name: t('Open Complaints', 'شكاوى مفتوحة'), value: d.open_complaints || 0, color: '#E74C3C' },
+    { name: t('Open Questions', 'أسئلة مجتمع نَفَس'), value: d.open_community_questions || 0, color: '#3B82F6' },
     { name: t('Open Maintenance', 'طلبات صيانة'), value: d.open_maintenance || 0, color: '#F39C12' },
     { name: t('Blood Campaigns', 'حملات دم'), value: d.active_blood_campaigns || 0, color: '#c0392b' },
   ]
@@ -130,12 +130,12 @@ export default function Dashboard() {
           iconBg="#fef2f2"
         />
         <KpiCard
-          label={t('Open Complaints', 'شكاوى مفتوحة')}
-          value={d.open_complaints ?? '—'}
-          delta={d.open_complaints > 50 ? t('Needs attention', 'تحتاج اهتمامًا') : t('Within normal range', 'ضمن النطاق الطبيعي')}
-          icon={<IcoFlag size={18} />}
-          colorClass={d.open_complaints > 50 ? 'accent' : ''}
-          iconBg={d.open_complaints > 50 ? '#fef2f2' : '#eff6ff'}
+          label={t('Community Questions', 'أسئلة مجتمع نَفَس')}
+          value={d.open_community_questions ?? '—'}
+          delta={d.open_community_questions > 20 ? t('Needs attention', 'تحتاج اهتمامًا') : t('Within normal range', 'ضمن النطاق الطبيعي')}
+          icon={<IcoCommunity size={18} />}
+          colorClass={d.open_community_questions > 20 ? 'accent' : ''}
+          iconBg="#eff6ff"
         />
         <KpiCard
           label={t('Maintenance Requests', 'طلبات الصيانة')}

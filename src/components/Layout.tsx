@@ -5,7 +5,7 @@ import {
   IcoDashboard, IcoHospital, IcoUsers, IcoBriefcase, IcoShield,
   IcoHeart, IcoFlag, IcoStar, IcoChart, IcoSettings, IcoBed, IcoCalendar,
   IcoBadge, IcoWrench, IcoTool, IcoSearch, IcoClipboard, IcoBuilding,
-  IcoLogout, IcoGlobe, IcoSubscription,
+  IcoLogout, IcoGlobe, IcoSubscription, IcoCommunity,
 } from './Icon'
 
 type NavItem = {
@@ -23,7 +23,7 @@ const NAV_NATIONAL: NavItem[] = [
   { to: '/companies',     en: 'Maintenance Companies', ar: 'شركات الصيانة',       Icon: IcoBriefcase    },
   { to: '/accounts',      en: 'Admin Accounts',        ar: 'حسابات المسؤولين',    Icon: IcoShield       },
   { to: '/donations',     en: 'Donations',             ar: 'التبرعات',            Icon: IcoHeart        },
-  { to: '/complaints',    en: 'Complaints',            ar: 'الشكاوى',             Icon: IcoFlag         },
+  { to: '/community',    en: 'Nafas Community',       ar: 'مجتمع نَفَس',         Icon: IcoCommunity    },
   { to: '/reviews',       en: 'Ratings & Reviews',     ar: 'التقييمات',           Icon: IcoStar         },
   { to: '/reports',       en: 'Reports',               ar: 'التقارير',            Icon: IcoChart        },
   { to: '/settings',      en: 'Settings',              ar: 'الإعدادات',           Icon: IcoSettings     },
@@ -36,7 +36,7 @@ const NAV_HOSPITAL: NavItem[] = [
   { to: '/staff',        en: 'Staff',             ar: 'الكوادر',       Icon: IcoBadge     },
   { to: '/equipment',    en: 'Equipment',         ar: 'المعدات',       Icon: IcoWrench    },
   { to: '/needs',        en: 'Maintenance Needs', ar: 'طلبات الصيانة', Icon: IcoTool      },
-  { to: '/complaints',   en: 'Complaints',        ar: 'الشكاوى',       Icon: IcoFlag      },
+  { to: '/community',   en: 'Nafas Community',   ar: 'مجتمع نَفَس',   Icon: IcoCommunity },
   { to: '/reports',      en: 'Reports',           ar: 'التقارير',      Icon: IcoChart     },
 ]
 

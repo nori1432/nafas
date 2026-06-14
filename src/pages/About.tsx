@@ -105,11 +105,11 @@ export default function About() {
   /* ── features ─────────────────────────────────────────────────── */
   const FEAT = [
     { icon: User,          color: '#6366f1', en: '6 User Roles',            ar: '6 أدوار', den: 'National admin · Hospital admin · Doctor · Patient · Donor · Maintenance co.', dar: 'مسؤول وطني · مستشفى · طبيب · مريض · متبرع · صيانة' },
-    { icon: Building2,     color: '#0ea5e9', en: 'Hospital Network',        ar: 'شبكة المستشفيات', den: 'Beds, staff, equipment, needs, complaints and subscriptions per hospital.', dar: 'أسرة، موظفون، معدات، احتياجات، شكاوى واشتراكات لكل مستشفى.' },
+    { icon: Building2,     color: '#0ea5e9', en: 'Hospital Network',        ar: 'شبكة المستشفيات', den: 'Beds, staff, equipment, needs, community questions and subscriptions per hospital.', dar: 'أسرة، موظفون، معدات، احتياجات، أسئلة المجتمع واشتراكات لكل مستشفى.' },
     { icon: CalendarCheck, color: '#10b981', en: 'Appointments',            ar: 'المواعيد', den: 'Specialty-based booking, doctor schedules, real-time slot availability.', dar: 'حجز بالتخصص وجداول الأطباء وتوفر الفترات في الوقت الفعلي.' },
     { icon: Wrench,        color: '#f59e0b', en: 'Maintenance Market',      ar: 'سوق الصيانة', den: 'Hospitals post needs. Companies bid. Admin approves contracts.', dar: 'المستشفيات تنشر احتياجاتها، الشركات تقدم عروضاً، الإداري يوافق.' },
     { icon: HeartHandshake,color: '#ef4444', en: 'Donations & Blood',       ar: 'تبرعات ودم', den: 'Citizens donate blood or supplies. Real-time matching with hospitals.', dar: 'تبرع بالدم أو المستلزمات مع توفيق فوري مع المستشفيات.' },
-    { icon: BarChart3,     color: '#8b5cf6', en: 'National Analytics',      ar: 'تحليلات وطنية', den: 'Bed occupancy, appointment stats, complaint heatmaps, subscriptions.', dar: 'إشغال الأسرة، إحصاءات المواعيد، خرائط الشكاوى، الاشتراكات.' },
+    { icon: BarChart3,     color: '#8b5cf6', en: 'National Analytics',      ar: 'تحليلات وطنية', den: 'Bed occupancy, appointment stats, community activity, subscriptions.', dar: 'إشغال الأسرة، إحصاءات المواعيد، نشاط المجتمع، الاشتراكات.' },
   ]
 
   /* ── tech stack ────────────────────────────────────────────────── */

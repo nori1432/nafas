@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useLang, useT } from '../store/lang'
 import {
   IcoDashboard, IcoBed, IcoWrench, IcoCalendar,
-  IcoHeart, IcoFlag, IcoChart, IcoBuilding,
+  IcoHeart, IcoFlag, IcoChart, IcoBuilding, IcoCommunity,
   IcoShield, IcoGlobe, IcoHospital, IcoSmartphone, IcoDownload,
 } from '../components/Icon'
 
@@ -38,17 +38,17 @@ const FEATURES = [
   },
   {
     Icon: IcoHeart,
-    titleEn: 'Blood & Organ Donations',
-    titleAr: 'التبرع بالدم والأعضاء',
+    titleEn: 'Blood Donations',
+    titleAr: 'التبرع بالدم',
     descEn: 'National donor registry connecting citizens with hospitals in urgent need.',
     descAr: 'سجل وطني للمتبرعين يربط المواطنين بالمستشفيات في حالات الاستعجال.',
   },
   {
-    Icon: IcoFlag,
-    titleEn: 'Complaints & Reviews',
-    titleAr: 'الشكاوى والتقييمات',
-    descEn: 'Transparent feedback channel for citizens with full administrative oversight.',
-    descAr: 'قناة تغذية راجعة شفافة للمواطنين مع إشراف إداري كامل.',
+    Icon: IcoCommunity,
+    titleEn: 'Nafas Community',
+    titleAr: 'مجتمع نَفَس',
+    descEn: 'Ask doctors directly and join specialty medical forums for peer support.',
+    descAr: 'اطرح أسئلتك على الأطباء مباشرةً وانضم إلى منتديات طبية متخصصة.',
   },
 ]
 
@@ -72,8 +72,8 @@ const WHO = [
     Icon: IcoBuilding,
     titleEn: 'Hospital Administrators',
     titleAr: 'مسؤولو المستشفيات',
-    descEn: 'Manage beds, staff, appointments, equipment needs, donations, and incoming complaints.',
-    descAr: 'إدارة الأسرّة والكوادر والمواعيد واحتياجات المعدات والتبرعات والشكاوى.',
+    descEn: 'Manage beds, staff, appointments, equipment needs, donations, and community questions.',
+    descAr: 'إدارة الأسرّة والكوادر والمواعيد واحتياجات المعدات والتبرعات وأسئلة المجتمع.',
     dark: false,
   },
   {
@@ -88,8 +88,8 @@ const WHO = [
 
 const APP_FEATURES = [
   { Icon: IcoCalendar,  en: 'Book Appointments',      ar: 'حجز المواعيد'          },
-  { Icon: IcoHeart,     en: 'Blood & Organ Donation', ar: 'التبرع بالدم والأعضاء' },
-  { Icon: IcoFlag,      en: 'File Complaints',        ar: 'تقديم الشكاوى'         },
+  { Icon: IcoHeart,     en: 'Blood Donation',          ar: 'التبرع بالدم'           },
+  { Icon: IcoCommunity, en: 'Nafas Community',         ar: 'مجتمع نَفَس'            },
   { Icon: IcoHospital,  en: 'Browse Hospitals',       ar: 'تصفح المستشفيات'       },
 ]
 
@@ -442,8 +442,8 @@ export default function Landing() {
               lineHeight: 1.78, margin: '0 0 36px', maxWidth: 420, fontFamily: ff,
             }}>
               {lang === 'ar'
-                ? 'وصّل المواطنين بالمنظومة الصحية — احجز مواعيدك، تبرّع بالدم والأعضاء، تابع احتياجات المستشفيات، وابلغ عن شكاواك من هاتفك.'
-                : "Connecting citizens to Algeria's healthcare ecosystem — book appointments, donate blood, track hospital needs, and file complaints, all from your phone."}
+                ? 'وصّل المواطنين بالمنظومة الصحية — احجز مواعيدك، تبرّع بالدم، تابع احتياجات المستشفيات، وتفاعل مع مجتمع نَفَس الطبي من هاتفك.'
+                : "Connecting citizens to Algeria's healthcare ecosystem — book appointments, donate blood, track hospital needs, and connect with the Nafas medical community, all from your phone."}
             </p>
 
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 9, marginBottom: 40 }}>

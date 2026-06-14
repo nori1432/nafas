@@ -146,8 +146,8 @@ export default function Login() {
           </h1>
           <p className="login-subtext">
             {t(
-              'Manage hospitals, maintenance companies, bed availability, complaints and donations from a single unified platform.',
-              'إدارة المستشفيات وشركات الصيانة وتوافر الأسرّة والشكاوى والتبرعات من منصة موحّدة.'
+              'Manage hospitals, maintenance companies, bed availability, community questions and donations from a single unified platform.',
+              'إدارة المستشفيات وشركات الصيانة وتوافر الأسرّة وأسئلة المجتمع والتبرعات من منصة موحّدة.'
             )}
           </p>
 
