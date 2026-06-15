@@ -5,7 +5,7 @@ import {
   IcoDashboard, IcoHospital, IcoUsers, IcoBriefcase, IcoShield,
   IcoHeart, IcoFlag, IcoStar, IcoChart, IcoSettings, IcoBed, IcoCalendar,
   IcoBadge, IcoWrench, IcoTool, IcoSearch, IcoClipboard, IcoBuilding,
-  IcoLogout, IcoGlobe, IcoSubscription, IcoCommunity,
+  IcoLogout, IcoGlobe, IcoSubscription, IcoCommunity, IcoBook,
 } from './Icon'
 
 type NavItem = {
@@ -24,6 +24,7 @@ const NAV_NATIONAL: NavItem[] = [
   { to: '/accounts',      en: 'Admin Accounts',        ar: 'حسابات المسؤولين',    Icon: IcoShield       },
   { to: '/donations',     en: 'Donations',             ar: 'التبرعات',            Icon: IcoHeart        },
   { to: '/community',    en: 'Nafas Community',       ar: 'مجتمع نَفَس',         Icon: IcoCommunity    },
+  { to: '/library',     en: 'Medical Library',       ar: 'المكتبة الطبية',      Icon: IcoBook         },
   { to: '/reviews',       en: 'Ratings & Reviews',     ar: 'التقييمات',           Icon: IcoStar         },
   { to: '/reports',       en: 'Reports',               ar: 'التقارير',            Icon: IcoChart        },
   { to: '/settings',      en: 'Settings',              ar: 'الإعدادات',           Icon: IcoSettings     },

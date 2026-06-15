@@ -12,6 +12,7 @@ import Appointments from './pages/Appointments'
 import Maintenance from './pages/Maintenance'
 import Donations from './pages/Donations'
 import Community from './pages/Community'
+import Library from './pages/Library'
 import Reports from './pages/Reports'
 import Settings from './pages/Settings'
 import Subscriptions from './pages/Subscriptions'
@@ -76,6 +77,7 @@ export default function App() {
         <Route path="/maintenance" element={<Maintenance />} />
         <Route path="/donations" element={<Donations />} />
         <Route path="/community" element={<Community />} />
+        <Route path="/library" element={<Library />} />
         <Route path="/reports" element={<Reports />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/subscriptions" element={<Subscriptions />} />
