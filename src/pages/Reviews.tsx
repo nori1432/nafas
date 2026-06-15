@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '../lib/api'
+import { useT, useLang } from '../store/lang'
 
 /* ── Types ─────────────────────────────────────────────── */
 interface Review {
@@ -82,6 +83,8 @@ const DEMO_REVIEWS: Review[] = [
 /* ── Main Component ─────────────────────────────────────── */
 export default function Reviews() {
   const qc = useQueryClient()
+  const t = useT()
+  const { lang } = useLang()
   const [tab, setTab] = useState<'all' | 'pending' | 'published' | 'rejected'>('all')
   const [filterCat, setFilterCat] = useState('')
   const [filterRating, setFilterRating] = useState('')
@@ -150,19 +153,19 @@ export default function Reviews() {
     <>
       {/* ── Header Actions ─────────────────────────── */}
       <div className="toolbar">
-        <input className="input input-search" placeholder="Search reviews, hospitals, organisations…" value={search}
+        <input className="input input-search" placeholder={t('Search reviews…', 'البحث في التقييمات...')} value={search}
           onChange={e => setSearch(e.target.value)} style={{ maxWidth: 340 }} />
         <select className="input" value={filterCat} onChange={e => setFilterCat(e.target.value)} style={{ maxWidth: 180 }}>
-          <option value="">All Categories</option>
+          <option value="">{t('All Categories', 'كل الفئات')}</option>
           {Object.entries(CATEGORY_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
         <select className="input" value={filterRating} onChange={e => setFilterRating(e.target.value)} style={{ maxWidth: 140 }}>
-          <option value="">All Ratings</option>
+          <option value="">{t('All Ratings', 'كل التقييمات')}</option>
           {[5, 4, 3, 2, 1].map(n => <option key={n} value={n}>{n}★</option>)}
         </select>
         <div style={{ flex: 1 }} />
         <button className="btn btn-primary" onClick={() => setShowForm(true)}>
-          + Submit Review
+          {t('+ Submit Review', '+ إضافة تقييم')}
         </button>
       </div>
 
@@ -175,7 +178,7 @@ export default function Reviews() {
         <div className="kpi-card green">
           <div className="kpi-icon" style={{ background: '#f0fdf4', fontSize: 22 }}>⭐</div>
           <div>
-            <div className="label">Average Rating</div>
+            <div className="label">{t('Average Rating', 'متوسط التقييم')}</div>
             <div className="value">{avgRating.toFixed(1)}</div>
             <div className="delta">from {published.length} reviews</div>
           </div>
@@ -183,7 +186,7 @@ export default function Reviews() {
         <div className="kpi-card">
           <div className="kpi-icon" style={{ background: '#eff6ff', fontSize: 22 }}>📋</div>
           <div>
-            <div className="label">Total Reviews</div>
+            <div className="label">{t('Total Reviews', 'إجمالي التقييمات')}</div>
             <div className="value">{reviews.length}</div>
             <div className="delta">{reviews.filter(r => r.status === 'pending').length} pending</div>
           </div>
@@ -191,7 +194,7 @@ export default function Reviews() {
         <div className="kpi-card amber">
           <div className="kpi-icon" style={{ background: '#fffbeb', fontSize: 22 }}>⏳</div>
           <div>
-            <div className="label">Pending Moderation</div>
+            <div className="label">{t('Pending Moderation', 'قيد المراجعة')}</div>
             <div className="value">{reviews.filter(r => r.status === 'pending').length}</div>
             <div className="delta">Awaiting review</div>
           </div>
@@ -199,7 +202,7 @@ export default function Reviews() {
         <div className="kpi-card accent">
           <div className="kpi-icon" style={{ background: '#fef2f2', fontSize: 22 }}>👍</div>
           <div>
-            <div className="label">Total Helpful Votes</div>
+            <div className="label">{t('Total Helpful Votes', 'إجمالي الأصوات المفيدة')}</div>
             <div className="value">{reviews.reduce((s, r) => s + r.helpful_count, 0)}</div>
             <div className="delta">Community engagement</div>
           </div>
@@ -211,11 +214,11 @@ export default function Reviews() {
         <div>
           {/* Tabs */}
           <div className="tabs">
-            {(['all', 'pending', 'published', 'rejected'] as const).map(t => (
-              <button key={t} className={`tab-btn ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>
-                {t.charAt(0).toUpperCase() + t.slice(1)}
-                <span style={{ marginLeft: 6, background: tab === t ? 'rgba(192,57,43,0.15)' : 'var(--border)', color: tab === t ? 'var(--accent)' : 'var(--text-3)', borderRadius: 99, padding: '1px 7px', fontSize: 11, fontWeight: 700 }}>
-                  {t === 'all' ? reviews.length : reviews.filter(r => r.status === t).length}
+            {(['all', 'pending', 'published', 'rejected'] as const).map(tabKey => (
+              <button key={tabKey} className={`tab-btn ${tab === tabKey ? 'active' : ''}`} onClick={() => setTab(tabKey)}>
+                {tabKey === 'all' ? t('All', 'الكل') : tabKey === 'pending' ? t('Pending', 'قيد الانتظار') : tabKey === 'published' ? t('Published', 'منشور') : t('Rejected', 'مرفوض')}
+                <span style={{ marginLeft: 6, background: tab === tabKey ? 'rgba(192,57,43,0.15)' : 'var(--border)', color: tab === tabKey ? 'var(--accent)' : 'var(--text-3)', borderRadius: 99, padding: '1px 7px', fontSize: 11, fontWeight: 700 }}>
+                  {tabKey === 'all' ? reviews.length : reviews.filter(r => r.status === tabKey).length}
                 </span>
               </button>
             ))}
@@ -226,8 +229,8 @@ export default function Reviews() {
             {filtered.length === 0 && (
               <div className="empty-state">
                 <div className="empty-icon">⭐</div>
-                <div className="empty-title">No reviews found</div>
-                <div className="empty-sub">Try adjusting your filters</div>
+                <div className="empty-title">{t('No reviews found', 'لا توجد تقييمات')}</div>
+                <div className="empty-sub">{t('Try adjusting your filters', 'حاول تعديل الفلاتر')}</div>
               </div>
             )}
             {filtered.map(r => (
@@ -268,32 +271,32 @@ export default function Reviews() {
 
                 {r.admin_response && (
                   <div className="review-admin-response">
-                    <strong>Admin Response</strong>
+                    <strong>{t('Admin Response', 'رد الإدارة')}</strong>
                     {r.admin_response}
                   </div>
                 )}
 
                 <div style={{ display: 'flex', gap: 8, paddingTop: 4, borderTop: '1px solid var(--border)', marginTop: 4 }}>
                   <button className="btn btn-sm btn-ghost" onClick={() => { setSelected(r); setResponse(r.admin_response || '') }}>
-                    💬 Respond
+                    💬 {t('Respond', 'رد')}
                   </button>
                   {r.status === 'pending' && (
                     <>
                       <button className="btn btn-sm btn-success" onClick={() => updateStatus.mutate({ id: r.id, status: 'published' })}>
-                        ✅ Publish
+                        ✅ {t('Publish', 'نشر')}
                       </button>
                       <button className="btn btn-sm btn-danger" onClick={() => updateStatus.mutate({ id: r.id, status: 'rejected' })}>
-                        ✕ Reject
+                        ✕ {t('Reject', 'رفض')}
                       </button>
                     </>
                   )}
                   {r.status === 'published' && (
                     <button className="btn btn-sm btn-danger" onClick={() => updateStatus.mutate({ id: r.id, status: 'rejected' })}>
-                      Unpublish
+                      {t('Unpublish', 'إلغاء النشر')}
                     </button>
                   )}
                   {r.status === 'rejected' && (
-                    <button className="btn btn-sm btn-blue" onClick={() => updateStatus.mutate({ id: r.id, status: 'published' })}>
+                    <button className="btn btn-sm btn-ghost" onClick={() => updateStatus.mutate({ id: r.id, status: 'published' })}>
                       Re-publish
                     </button>
                   )}
@@ -307,7 +310,7 @@ export default function Reviews() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'sticky', top: 88 }}>
           {/* Rating breakdown */}
           <div className="card">
-            <div className="card-title" style={{ marginBottom: 16 }}>Rating Breakdown</div>
+            <div className="card-title" style={{ marginBottom: 16 }}>{t('Rating Breakdown', 'توزيع التقييمات')}</div>
             <div style={{ marginBottom: 16, textAlign: 'center' }}>
               <div style={{ fontSize: 52, fontWeight: 800, color: 'var(--text)', lineHeight: 1, letterSpacing: -2 }}>{avgRating.toFixed(1)}</div>
               <Stars rating={Math.round(avgRating)} />
@@ -326,16 +329,16 @@ export default function Reviews() {
 
           {/* Category averages */}
           <div className="card">
-            <div className="card-title" style={{ marginBottom: 14 }}>Avg by Category</div>
+            <div className="card-title" style={{ marginBottom: 14 }}>{t('Avg by Category', 'المتوسط حسب الفئة')}</div>
             {catAvg.filter(c => c.avg > 0).map(c => (
               <RatingBar key={c.cat} label={c.cat.charAt(0).toUpperCase() + c.cat.slice(1)} value={c.avg} />
             ))}
-            {catAvg.every(c => c.avg === 0) && <div className="muted text-sm">No data yet</div>}
+            {catAvg.every(c => c.avg === 0) && <div className="muted text-sm">{t('No data yet', 'لا توجد بيانات')}</div>}
           </div>
 
           {/* Recent activity */}
           <div className="card">
-            <div className="card-title" style={{ marginBottom: 14 }}>Recent Activity</div>
+            <div className="card-title" style={{ marginBottom: 14 }}>{t('Recent Activity', 'النشاط الأخير')}</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {reviews.slice(0, 4).map(r => (
                 <div key={r.id} style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
@@ -383,30 +386,30 @@ export default function Reviews() {
             </div>
 
             <div className="field" style={{ marginBottom: 14 }}>
-              <span>Admin Response</span>
+              <span>{t('Admin Response', 'رد الإدارة')}</span>
               <textarea
                 className="input"
                 rows={5}
-                placeholder="Write a professional response to this review…"
+                placeholder={t('Write a professional response…', 'اكتب رداً احترافياً...')}
                 value={response}
                 onChange={e => setResponse(e.target.value)}
               />
             </div>
 
             <div className="field" style={{ marginBottom: 20 }}>
-              <span>Status</span>
+              <span>{t('Status', 'الحالة')}</span>
               <select className="input" value={selected.status} onChange={e => setSelected({ ...selected, status: e.target.value })}>
-                <option value="pending">Pending</option>
-                <option value="published">Published</option>
-                <option value="rejected">Rejected</option>
+                <option value="pending">{t('Pending', 'قيد الانتظار')}</option>
+                <option value="published">{t('Published', 'منشور')}</option>
+                <option value="rejected">{t('Rejected', 'مرفوض')}</option>
               </select>
             </div>
 
             <div className="drawer-footer">
-              <button className="btn btn-ghost" onClick={() => setSelected(null)}>Cancel</button>
+              <button className="btn btn-ghost" onClick={() => setSelected(null)}>{t('Cancel', 'إلغاء')}</button>
               <button className="btn btn-primary" disabled={updateStatus.isPending}
                 onClick={() => updateStatus.mutate({ id: selected.id, status: selected.status, admin_response: response })}>
-                {updateStatus.isPending ? 'Saving…' : 'Save Response'}
+                {updateStatus.isPending ? t('Saving…', 'جارٍ الحفظ...') : t('Save Response', 'حفظ الرد')}
               </button>
             </div>
           </aside>
@@ -419,7 +422,7 @@ export default function Reviews() {
           <div className="modal" style={{ maxWidth: 620 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
               <div>
-                <h3 style={{ margin: 0, fontSize: 20, fontWeight: 800 }}>Submit a Review</h3>
+                <h3 style={{ margin: 0, fontSize: 20, fontWeight: 800 }}>{t('Submit a Review', 'إضافة تقييم')}</h3>
                 <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--text-2)' }}>Share your experience with a maintenance company or NAFAS services</p>
               </div>
               <button className="drawer-close" onClick={() => setShowForm(false)}>✕</button>
@@ -428,58 +431,60 @@ export default function Reviews() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div className="form-row">
                 <div className="field">
-                  <span>Your Name</span>
+                  <span>{t('Your Name', 'اسمك')}</span>
                   <input className="input" placeholder="Dr. Karim Benali" value={newReview.reviewer_name} onChange={e => setNewReview(s => ({ ...s, reviewer_name: e.target.value }))} />
                 </div>
                 <div className="field">
-                  <span>Your Role / Title</span>
+                  <span>{t('Your Role / Title', 'منصبك / لقبك')}</span>
                   <input className="input" placeholder="Chief Medical Officer" value={newReview.reviewer_role} onChange={e => setNewReview(s => ({ ...s, reviewer_role: e.target.value }))} />
                 </div>
               </div>
               <div className="field">
-                <span>Organisation</span>
+                <span>{t('Organisation', 'المؤسسة')}</span>
                 <input className="input" placeholder="CHU Mustapha Pacha" value={newReview.reviewer_org} onChange={e => setNewReview(s => ({ ...s, reviewer_org: e.target.value }))} />
               </div>
               <div className="form-row">
                 <div className="field">
-                  <span>Hospital</span>
+                  <span>{t('Hospital', 'المستشفى')}</span>
                   <select className="input" value={newReview.hospital_id} onChange={e => setNewReview(s => ({ ...s, hospital_id: e.target.value }))}>
-                    <option value="">Select hospital…</option>
+                    <option value="">{t('Select hospital…', 'اختر مستشفى...')}</option>
                     {(hospitalsData || []).map((h: any) => <option key={h.id} value={h.id}>{h.name_en}</option>)}
                   </select>
                 </div>
                 <div className="field">
-                  <span>Category</span>
+                  <span>{t('Category', 'الفئة')}</span>
                   <select className="input" value={newReview.category} onChange={e => setNewReview(s => ({ ...s, category: e.target.value }))}>
                     {Object.entries(CATEGORY_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                   </select>
                 </div>
               </div>
               <div className="field">
-                <span>Your Rating</span>
+                <span>{t('Your Rating', 'تقييمك')}</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingTop: 4 }}>
                   <Stars rating={newReview.rating} interactive onChange={n => setNewReview(s => ({ ...s, rating: n }))} />
                   <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)' }}>
-                    {['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'][newReview.rating]}
+                    {lang === 'ar'
+                      ? ['', 'ضعيف', 'مقبول', 'جيد', 'جيد جداً', 'ممتاز'][newReview.rating]
+                      : ['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'][newReview.rating]}
                   </span>
                 </div>
               </div>
               <div className="field">
-                <span>Review Title</span>
+                <span>{t('Review Title', 'عنوان التقييم')}</span>
                 <input className="input" placeholder="Summarise your experience in one line" value={newReview.title} onChange={e => setNewReview(s => ({ ...s, title: e.target.value }))} />
               </div>
               <div className="field">
-                <span>Detailed Review</span>
+                <span>{t('Detailed Review', 'التقييم التفصيلي')}</span>
                 <textarea className="input" rows={5} placeholder="Share specific details about the service, quality, timeliness and professionalism…" value={newReview.body} onChange={e => setNewReview(s => ({ ...s, body: e.target.value }))} />
               </div>
             </div>
 
-            <div className="drawer-footer" style={{ marginTop: 24 }}>
-              <button className="btn btn-ghost" onClick={() => setShowForm(false)}>Cancel</button>
+            <div className="drawer-footer">
+              <button className="btn btn-ghost" onClick={() => setShowForm(false)}>{t('Cancel', 'إلغاء')}</button>
               <button className="btn btn-primary"
                 disabled={!newReview.reviewer_name || !newReview.title || !newReview.body}
                 onClick={submitReview}>
-                Submit Review
+                {t('Submit Review', 'إضافة تقييم')}
               </button>
             </div>
           </div>

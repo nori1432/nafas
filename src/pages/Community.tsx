@@ -1,17 +1,17 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '../lib/api'
-import { useT } from '../store/lang'
+import { useT, useLang } from '../store/lang'
 
 type Tab = 'questions' | 'forums'
 
-const SPECIALTY_LABELS: Record<string, string> = {
-  neurology_mental_health: 'Neurology & Mental Health',
-  mother_child_health:     'Mother & Child Health',
-  kidney_dialysis:         'Kidney & Dialysis',
-  diabetes_endocrinology:  'Diabetes & Endocrinology',
-  chest_respiratory:       'Chest & Respiratory',
-  general_medicine:        'General Medicine',
+const SPECIALTY_LABELS: Record<string, [string, string]> = {
+  neurology_mental_health: ['Neurology & Mental Health', 'طب الأعصاب والصحة النفسية'],
+  mother_child_health:     ['Mother & Child Health',     'صحة الأم والطفل'],
+  kidney_dialysis:         ['Kidney & Dialysis',         'الكلى والغسيل الكلوي'],
+  diabetes_endocrinology:  ['Diabetes & Endocrinology',  'السكري والغدد الصماء'],
+  chest_respiratory:       ['Chest & Respiratory',       'صدر وجهاز تنفسي'],
+  general_medicine:        ['General Medicine',          'الطب العام'],
 }
 
 const URGENCY_BADGE: Record<string, string> = {
@@ -57,6 +57,7 @@ export default function Community() {
 function QuestionsTab() {
   const qc = useQueryClient()
   const t = useT()
+  const { lang } = useLang()
   const [status, setStatus] = useState('')
   const [search, setSearch] = useState('')
   const [open, setOpen] = useState<any>(null)
@@ -164,7 +165,7 @@ function QuestionsTab() {
                   </div>
                 </td>
                 <td style={{ fontSize: 12, color: 'var(--text-3)' }}>
-                  {q.specialty ? (SPECIALTY_LABELS[q.specialty] || q.specialty) : '—'}
+                  {q.specialty ? (SPECIALTY_LABELS[q.specialty] ? (lang === 'ar' ? SPECIALTY_LABELS[q.specialty][1] : SPECIALTY_LABELS[q.specialty][0]) : q.specialty) : '—'}
                 </td>
                 <td>
                   <span className={`badge ${URGENCY_BADGE[q.urgency] || 'badge-gray'}`}>
@@ -208,7 +209,7 @@ function QuestionsTab() {
               <div>
                 <h3>{t('Question', 'سؤال')} #{open.id}</h3>
                 <div style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 2 }}>
-                  {open.user_name} · {open.specialty ? (SPECIALTY_LABELS[open.specialty] || open.specialty) : t('General', 'عام')} · {(open.created_at || '').slice(0, 10)}
+                  {open.user_name} · {open.specialty ? (SPECIALTY_LABELS[open.specialty] ? (lang === 'ar' ? SPECIALTY_LABELS[open.specialty][1] : SPECIALTY_LABELS[open.specialty][0]) : open.specialty) : t('General', 'عام')} · {(open.created_at || '').slice(0, 10)}
                 </div>
               </div>
               <button className="drawer-close" onClick={() => setOpen(null)}>✕</button>
@@ -314,6 +315,7 @@ function QuestionsTab() {
 function ForumsTab() {
   const qc = useQueryClient()
   const t = useT()
+  const { lang } = useLang()
   const [specialty, setSpecialty] = useState('neurology_mental_health')
   const [open, setOpen] = useState<any>(null)
   const [reply, setReply] = useState('')
@@ -357,13 +359,13 @@ function ForumsTab() {
     <>
       {/* Specialty selector */}
       <div className="toolbar" style={{ flexWrap: 'wrap', gap: 8, marginBottom: 4 }}>
-        {Object.entries(SPECIALTY_LABELS).map(([key, label]) => (
+        {Object.entries(SPECIALTY_LABELS).map(([key, labels]) => (
           <button
             key={key}
             className={`btn btn-sm ${specialty === key ? 'btn-primary' : 'btn-ghost'}`}
             onClick={() => setSpecialty(key)}
           >
-            {label}
+            {lang === 'ar' ? labels[1] : labels[0]}
           </button>
         ))}
         <div style={{ flex: 1 }} />
@@ -431,7 +433,7 @@ function ForumsTab() {
               <div>
                 <h3>{t('Forum Post', 'منشور')} #{open.id}</h3>
                 <div style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 2 }}>
-                  {SPECIALTY_LABELS[open.specialty] || open.specialty} · {open.user_name} · {(open.created_at || '').slice(0, 10)}
+                  {SPECIALTY_LABELS[open.specialty] ? (lang === 'ar' ? SPECIALTY_LABELS[open.specialty][1] : SPECIALTY_LABELS[open.specialty][0]) : open.specialty} · {open.user_name} · {(open.created_at || '').slice(0, 10)}
                 </div>
               </div>
               <button className="drawer-close" onClick={() => setOpen(null)}>✕</button>

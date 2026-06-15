@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '../lib/api'
 import { useT } from '../store/lang'
+import { IcoBook } from '../components/Icon'
 
 type Category = 'free' | 'paid'
 
@@ -37,7 +38,7 @@ export default function Library() {
   const [editing, setEditing] = useState<Book | null>(null)
   const [form, setForm] = useState(EMPTY_FORM)
 
-  const { data: books = [], isLoading } = useQuery<Book[]>({
+  const { data: books = [], isLoading, isError, refetch } = useQuery<Book[]>({
     queryKey: ['library-books', tab],
     queryFn: async () => {
       const r = await api.get('/library/books', { params: { category: tab, per_page: 100 } })
@@ -104,29 +105,42 @@ export default function Library() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <div style={{ flex: 1 }}>
-          <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700 }}>
-            {t('Medical Library', 'المكتبة الطبية')}
-          </h2>
-          <p style={{ margin: '4px 0 0', color: 'var(--text-3)', fontSize: 13 }}>
-            {t('Manage free and paid medical books', 'إدارة الكتب الطبية المجانية والمدفوعة')}
-          </p>
+      {/* Page header card */}
+      <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+        <div className="kpi-icon" style={{ background: 'var(--accent-light, #e8f4f8)', color: 'var(--accent)', width: 36, height: 36, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <IcoBook size={20} />
         </div>
-        <button className="btn btn-ghost btn-sm" onClick={() => seed.mutate()} disabled={seed.isPending}
-          title={t('Seed placeholder books (runs once)', 'إضافة بيانات تجريبية (مرة واحدة)')}>
-          {seed.isPending ? '…' : t('Seed', 'تعبئة تجريبية')}
-        </button>
-        <button className="btn btn-primary" onClick={openAdd}>
-          + {t('Add Book', 'إضافة كتاب')}
-        </button>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 700, fontSize: 18 }}>
+            {t('Medical Library', 'المكتبة الطبية')}
+          </div>
+          <div style={{ color: 'var(--text-3)', fontSize: 13, marginTop: 2 }}>
+            {t('Manage free and paid medical books', 'إدارة الكتب الطبية المجانية والمدفوعة')}
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <button
+            className="btn btn-ghost btn-sm"
+            onClick={() => seed.mutate()}
+            disabled={seed.isPending}
+            title={t('Seed placeholder books (runs once)', 'إضافة بيانات تجريبية (مرة واحدة)')}
+          >
+            {seed.isPending ? '…' : t('Seed', 'تعبئة تجريبية')}
+          </button>
+          <button className="btn btn-primary" onClick={openAdd}>
+            + {t('Add Book', 'إضافة كتاب')}
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}
-      <div className="tab-bar">
+      <div className="tabs">
         {(['free', 'paid'] as Category[]).map((c) => (
-          <button key={c} className={`tab ${tab === c ? 'active' : ''}`} onClick={() => setTab(c)}>
+          <button
+            key={c}
+            className={`tab-btn ${tab === c ? 'active' : ''}`}
+            onClick={() => setTab(c)}
+          >
             {c === 'free' ? t('Free Books', 'كتب مجانية') : t('Paid Books', 'كتب للشراء')}
           </button>
         ))}
@@ -137,13 +151,28 @@ export default function Library() {
         <div className="card" style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-3)' }}>
           {t('Loading…', 'جارٍ التحميل...')}
         </div>
+      ) : isError ? (
+        <div className="card" style={{ textAlign: 'center', padding: '3rem', color: '#ef4444' }}>
+          <div style={{ marginBottom: 12 }}>
+            {t('Failed to load books — check API connection.', 'تعذّر تحميل الكتب — تحقق من الاتصال بالخادم.')}
+          </div>
+          <button className="btn btn-ghost btn-sm" onClick={() => refetch()}>
+            {t('Retry', 'إعادة المحاولة')}
+          </button>
+        </div>
       ) : books.length === 0 ? (
-        <div className="card" style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-3)' }}>
-          {t('No books yet. Click "Add Book" or "Seed" to get started.', 'لا توجد كتب. انقر على "إضافة كتاب" أو "تعبئة تجريبية".')}
+        <div className="card">
+          <div className="empty-state">
+            <div className="empty-icon"><IcoBook size={32} /></div>
+            <div className="empty-title">{t('No books yet', 'لا توجد كتب بعد')}</div>
+            <div className="empty-sub">
+              {t('Click "Add Book" or "Seed" to get started.', 'انقر على "إضافة كتاب" أو "تعبئة تجريبية" للبدء.')}
+            </div>
+          </div>
         </div>
       ) : (
         <div className="table-wrap card">
-          <table className="table">
+          <table className="nfs">
             <thead>
               <tr>
                 <th>{t('Cover', 'الغلاف')}</th>
@@ -163,7 +192,9 @@ export default function Library() {
                     {b.cover_image ? (
                       <img src={b.cover_image} alt="" style={{ width: 40, height: 54, objectFit: 'cover', borderRadius: 4 }} />
                     ) : (
-                      <div style={{ width: 40, height: 54, borderRadius: 4, background: 'var(--surface-2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-3)', fontSize: 18 }}>📖</div>
+                      <div style={{ width: 40, height: 54, borderRadius: 4, background: 'var(--surface-2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-3)' }}>
+                        <IcoBook size={18} />
+                      </div>
                     )}
                   </td>
                   <td style={{ fontWeight: 600, maxWidth: 200 }}>{b.title}</td>
@@ -188,9 +219,12 @@ export default function Library() {
                   )}
                   <td onClick={(e) => e.stopPropagation()} style={{ display: 'flex', gap: 6, flexWrap: 'nowrap' }}>
                     <button className="btn btn-ghost btn-sm" onClick={() => openEdit(b)}>{t('Edit', 'تعديل')}</button>
-                    <button className="btn btn-ghost btn-sm" style={{ color: '#ef4444' }}
+                    <button
+                      className="btn btn-ghost btn-sm"
+                      style={{ color: '#ef4444' }}
                       disabled={deleteBook.isPending}
-                      onClick={() => { if (window.confirm(t('Remove this book?', 'حذف هذا الكتاب؟'))) deleteBook.mutate(b.id) }}>
+                      onClick={() => { if (window.confirm(t('Remove this book?', 'حذف هذا الكتاب؟'))) deleteBook.mutate(b.id) }}
+                    >
                       {t('Remove', 'حذف')}
                     </button>
                   </td>
@@ -203,23 +237,26 @@ export default function Library() {
 
       {/* Detail drawer */}
       {open && (
-        <div className="drawer-overlay" onClick={() => setOpen(null)}>
+        <div className="drawer-backdrop" onClick={() => setOpen(null)}>
           <div className="drawer" onClick={(e) => e.stopPropagation()}>
             <div className="drawer-header">
               <div>
-                <div style={{ fontWeight: 700, fontSize: 16 }}>{open.title}</div>
-                <span className={`badge ${open.category === 'free' ? 'badge-green' : 'badge-amber'}`} style={{ marginTop: 4 }}>
+                <h3 style={{ margin: 0 }}>{open.title}</h3>
+                <span
+                  className={`badge ${open.category === 'free' ? 'badge-green' : 'badge-amber'}`}
+                  style={{ marginTop: 4, display: 'inline-block' }}
+                >
                   {open.category === 'free' ? t('Free', 'مجاني') : t('Paid', 'مدفوع')}
                 </span>
               </div>
-              <button className="btn btn-ghost btn-sm" onClick={() => setOpen(null)}>✕</button>
+              <button className="drawer-close" onClick={() => setOpen(null)}>✕</button>
             </div>
-            <div className="drawer-body">
+            <div style={{ padding: '1rem 1.25rem', display: 'flex', flexDirection: 'column', gap: 16, overflowY: 'auto', flex: 1 }}>
               {open.cover_image && (
-                <img src={open.cover_image} alt="" style={{ width: '100%', maxHeight: 200, objectFit: 'cover', borderRadius: 8, marginBottom: 16 }} />
+                <img src={open.cover_image} alt="" style={{ width: '100%', maxHeight: 200, objectFit: 'cover', borderRadius: 8 }} />
               )}
               {open.description && (
-                <p style={{ color: 'var(--text-2)', lineHeight: 1.6, marginBottom: 16 }}>{open.description}</p>
+                <p style={{ color: 'var(--text-2)', lineHeight: 1.6, margin: 0 }}>{open.description}</p>
               )}
               {open.category === 'free' && open.file_url && (
                 <a href={open.file_url} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ display: 'block', textAlign: 'center' }}>
@@ -245,54 +282,54 @@ export default function Library() {
         </div>
       )}
 
-      {/* Add / Edit modal */}
+      {/* Add / Edit drawer */}
       {showForm && (
-        <div className="drawer-overlay" onClick={() => { setShowForm(false); setEditing(null) }}>
+        <div className="drawer-backdrop" onClick={() => { setShowForm(false); setEditing(null) }}>
           <div className="drawer" onClick={(e) => e.stopPropagation()}>
             <div className="drawer-header">
-              <div style={{ fontWeight: 700, fontSize: 16 }}>
+              <h3 style={{ margin: 0 }}>
                 {editing ? t('Edit Book', 'تعديل الكتاب') : t('Add Book', 'إضافة كتاب')}
-              </div>
-              <button className="btn btn-ghost btn-sm" onClick={() => { setShowForm(false); setEditing(null) }}>✕</button>
+              </h3>
+              <button className="drawer-close" onClick={() => { setShowForm(false); setEditing(null) }}>✕</button>
             </div>
-            <div className="drawer-body" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <div>
-                <label className="field-label">{t('Title *', 'العنوان *')}</label>
+            <div style={{ padding: '1rem 1.25rem', display: 'flex', flexDirection: 'column', gap: 14, overflowY: 'auto', flex: 1 }}>
+              <div className="field">
+                <span>{t('Title *', 'العنوان *')}</span>
                 <input className="input" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
               </div>
-              <div>
-                <label className="field-label">{t('Description', 'الوصف')}</label>
+              <div className="field">
+                <span>{t('Description', 'الوصف')}</span>
                 <textarea className="input" rows={3} value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })} />
               </div>
-              <div>
-                <label className="field-label">{t('Category', 'التصنيف')}</label>
+              <div className="field">
+                <span>{t('Category', 'التصنيف')}</span>
                 <select className="input" value={form.category}
                   onChange={(e) => setForm({ ...form, category: e.target.value as Category })}>
                   <option value="free">{t('Free', 'مجاني')}</option>
                   <option value="paid">{t('Paid', 'مدفوع')}</option>
                 </select>
               </div>
-              <div>
-                <label className="field-label">{t('Cover Image URL', 'رابط صورة الغلاف')}</label>
+              <div className="field">
+                <span>{t('Cover Image URL', 'رابط صورة الغلاف')}</span>
                 <input className="input" value={form.cover_image}
                   onChange={(e) => setForm({ ...form, cover_image: e.target.value })} placeholder="https://…" />
               </div>
               {form.category === 'free' ? (
-                <div>
-                  <label className="field-label">{t('File URL (PDF / link)', 'رابط الملف (PDF / رابط)')}</label>
+                <div className="field">
+                  <span>{t('File URL (PDF / link)', 'رابط الملف (PDF / رابط)')}</span>
                   <input className="input" value={form.file_url}
                     onChange={(e) => setForm({ ...form, file_url: e.target.value })} placeholder="https://…" />
                 </div>
               ) : (
                 <>
-                  <div>
-                    <label className="field-label">{t('Price', 'السعر')}</label>
+                  <div className="field">
+                    <span>{t('Price', 'السعر')}</span>
                     <input className="input" value={form.price}
                       onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="e.g. 1500 DZD" />
                   </div>
-                  <div>
-                    <label className="field-label">{t('Buy URL', 'رابط الشراء')}</label>
+                  <div className="field">
+                    <span>{t('Buy URL', 'رابط الشراء')}</span>
                     <input className="input" value={form.buy_url}
                       onChange={(e) => setForm({ ...form, buy_url: e.target.value })} placeholder="https://…" />
                   </div>

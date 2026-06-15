@@ -1,16 +1,25 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '../lib/api'
+import { useT } from '../store/lang'
 
-const PLAN_COLORS: Record<string, string> = {
-  premium: '#C0392B', standard: '#2980B9', basic: '#27AE60', trial: '#F39C12',
+const PLAN_BADGE: Record<string, string> = {
+  premium: 'badge-red',
+  standard: 'badge-blue',
+  basic: 'badge-green',
+  trial: 'badge-amber',
 }
-const STATUS_COLORS: Record<string, string> = {
-  active: '#27AE60', expired: '#E74C3C', cancelled: '#888', trial: '#F39C12',
+
+const STATUS_BADGE: Record<string, string> = {
+  active: 'badge-green',
+  trial: 'badge-amber',
+  expired: 'badge-red',
+  cancelled: 'badge-gray',
 }
 
 export default function Subscriptions() {
   const qc = useQueryClient()
+  const t = useT()
   const [filter, setFilter] = useState({ status: '', plan: '' })
   const [editing, setEditing] = useState<any>(null)
 
@@ -33,75 +42,125 @@ export default function Subscriptions() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      <div className="card" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
+      <div className="toolbar">
         <label className="field" style={{ flex: 1, minWidth: 140 }}>
-          <span>Status</span>
+          <span>{t('Status', 'الحالة')}</span>
           <select className="input" value={filter.status} onChange={(e) => setFilter((f) => ({ ...f, status: e.target.value }))}>
-            <option value="">All</option>
-            {['active','trial','expired','cancelled'].map((s) => <option key={s} value={s}>{s}</option>)}
+            <option value="">{t('All', 'الكل')}</option>
+            <option value="active">{t('Active', 'نشط')}</option>
+            <option value="trial">{t('Trial', 'تجريبي')}</option>
+            <option value="expired">{t('Expired', 'منتهي')}</option>
+            <option value="cancelled">{t('Cancelled', 'ملغى')}</option>
           </select>
         </label>
         <label className="field" style={{ flex: 1, minWidth: 140 }}>
-          <span>Plan</span>
+          <span>{t('Plan', 'الخطة')}</span>
           <select className="input" value={filter.plan} onChange={(e) => setFilter((f) => ({ ...f, plan: e.target.value }))}>
-            <option value="">All</option>
-            {['basic','standard','premium'].map((p) => <option key={p} value={p}>{p}</option>)}
+            <option value="">{t('All', 'الكل')}</option>
+            <option value="basic">{t('Basic', 'أساسي')}</option>
+            <option value="standard">{t('Standard', 'قياسي')}</option>
+            <option value="premium">{t('Premium', 'مميز')}</option>
           </select>
         </label>
       </div>
 
-      <div className="card" style={{ overflowX: 'auto' }}>
-        {isLoading ? <p>Loading…</p> : (
+      <div className="table-wrap card">
+        {isLoading ? (
+          <div className="empty-state">
+            <div className="empty-title">{t('Loading…', 'جارٍ التحميل...')}</div>
+          </div>
+        ) : (
           <table className="nfs">
-            <thead><tr>
-              <th>Hospital</th><th>Plan</th><th>Status</th><th>Price/mo (DZD)</th>
-              <th>Start</th><th>End</th><th></th>
-            </tr></thead>
+            <thead>
+              <tr>
+                <th>{t('Hospital', 'المستشفى')}</th>
+                <th>{t('Plan', 'الخطة')}</th>
+                <th>{t('Status', 'الحالة')}</th>
+                <th>{t('Price/mo (DZD)', 'السعر/شهر (دج)')}</th>
+                <th>{t('Start', 'البداية')}</th>
+                <th>{t('End', 'النهاية')}</th>
+                <th></th>
+              </tr>
+            </thead>
             <tbody>
               {rows.map((s: any) => (
                 <tr key={s.id}>
                   <td>{s.hospital_name || `#${s.hospital_id}`}</td>
-                  <td><span style={{ padding: '2px 8px', borderRadius: 6, background: PLAN_COLORS[s.plan] || '#888', color: '#fff', fontSize: 12 }}>{s.plan}</span></td>
-                  <td><span style={{ padding: '2px 8px', borderRadius: 6, background: STATUS_COLORS[s.status] || '#888', color: '#fff', fontSize: 12 }}>{s.status}</span></td>
+                  <td>
+                    <span className={`badge ${PLAN_BADGE[s.plan] || 'badge-gray'}`}>{s.plan}</span>
+                  </td>
+                  <td>
+                    <span className={`badge ${STATUS_BADGE[s.status] || 'badge-gray'}`}>{s.status}</span>
+                  </td>
                   <td>{Number(s.price_monthly).toLocaleString()}</td>
                   <td>{s.start_date?.slice(0, 10)}</td>
                   <td>{s.end_date?.slice(0, 10)}</td>
-                  <td><button className="btn" onClick={() => setEditing(s)}>Edit</button></td>
+                  <td>
+                    <button className="btn btn-sm btn-ghost" onClick={() => setEditing(s)}>
+                      {t('Edit', 'تعديل')}
+                    </button>
+                  </td>
                 </tr>
               ))}
-              {rows.length === 0 && <tr><td colSpan={7} style={{ textAlign: 'center', color: '#888' }}>No subscriptions found</td></tr>}
+              {rows.length === 0 && (
+                <tr>
+                  <td colSpan={7}>
+                    <div className="empty-state">
+                      <div className="empty-icon">📋</div>
+                      <div className="empty-title">{t('No subscriptions found', 'لا توجد اشتراكات')}</div>
+                      <div className="empty-sub">{t('Try adjusting your filters.', 'حاول تعديل الفلاتر.')}</div>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         )}
       </div>
 
       {editing && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div className="card" style={{ width: 400, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <h3>Edit Subscription #{editing.id}</h3>
-            <label className="field"><span>Plan</span>
+        <div className="modal-backdrop">
+          <div className="modal">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+              <h3 style={{ margin: 0 }}>{t('Edit Subscription', 'تعديل الاشتراك')} #{editing.id}</h3>
+              <button className="btn btn-ghost btn-sm" onClick={() => setEditing(null)}>×</button>
+            </div>
+            <label className="field">
+              <span>{t('Plan', 'الخطة')}</span>
               <select className="input" value={editing.plan} onChange={(e) => setEditing((s: any) => ({ ...s, plan: e.target.value }))}>
-                {['basic','standard','premium'].map((p) => <option key={p}>{p}</option>)}
+                <option value="basic">{t('Basic', 'أساسي')}</option>
+                <option value="standard">{t('Standard', 'قياسي')}</option>
+                <option value="premium">{t('Premium', 'مميز')}</option>
               </select>
             </label>
-            <label className="field"><span>Status</span>
+            <label className="field">
+              <span>{t('Status', 'الحالة')}</span>
               <select className="input" value={editing.status} onChange={(e) => setEditing((s: any) => ({ ...s, status: e.target.value }))}>
-                {['active','trial','expired','cancelled'].map((s) => <option key={s}>{s}</option>)}
+                <option value="active">{t('Active', 'نشط')}</option>
+                <option value="trial">{t('Trial', 'تجريبي')}</option>
+                <option value="expired">{t('Expired', 'منتهي')}</option>
+                <option value="cancelled">{t('Cancelled', 'ملغى')}</option>
               </select>
             </label>
-            <label className="field"><span>Price/month (DZD)</span>
-              <input className="input" type="number" value={editing.price_monthly} onChange={(e) => setEditing((s: any) => ({ ...s, price_monthly: e.target.value }))} />
+            <label className="field">
+              <span>{t('Price/month (DZD)', 'السعر/شهر (دج)')}</span>
+              <input className="input" type="number" value={editing.price_monthly}
+                onChange={(e) => setEditing((s: any) => ({ ...s, price_monthly: e.target.value }))} />
             </label>
-            <label className="field"><span>End date</span>
-              <input className="input" type="date" value={editing.end_date?.slice(0, 10)} onChange={(e) => setEditing((s: any) => ({ ...s, end_date: e.target.value }))} />
+            <label className="field">
+              <span>{t('End date', 'تاريخ الانتهاء')}</span>
+              <input className="input" type="date" value={editing.end_date?.slice(0, 10)}
+                onChange={(e) => setEditing((s: any) => ({ ...s, end_date: e.target.value }))} />
             </label>
-            <label className="field"><span>Notes</span>
-              <input className="input" value={editing.notes || ''} onChange={(e) => setEditing((s: any) => ({ ...s, notes: e.target.value }))} />
+            <label className="field">
+              <span>{t('Notes', 'ملاحظات')}</span>
+              <input className="input" value={editing.notes || ''}
+                onChange={(e) => setEditing((s: any) => ({ ...s, notes: e.target.value }))} />
             </label>
-            <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-              <button className="btn" onClick={() => setEditing(null)}>Cancel</button>
+            <div className="drawer-footer">
+              <button className="btn btn-ghost" onClick={() => setEditing(null)}>{t('Cancel', 'إلغاء')}</button>
               <button className="btn btn-primary" onClick={() => updateMut.mutate(editing)} disabled={updateMut.isPending}>
-                {updateMut.isPending ? 'Saving…' : 'Save'}
+                {updateMut.isPending ? t('Saving…', 'جارٍ الحفظ...') : t('Save', 'حفظ')}
               </button>
             </div>
           </div>

@@ -53,17 +53,17 @@ export default function Companies() {
       </div>
 
       <div className="toolbar">
-        <input className="input input-search" placeholder="Search companies…" value={search}
+        <input className="input input-search" placeholder={t('Search companies…', 'البحث عن شركات...')} value={search}
           onChange={(e) => setSearch(e.target.value)} style={{ maxWidth: 260 }} />
         <select className="input" value={filterApproved} onChange={(e) => setFilterApproved(e.target.value)} style={{ maxWidth: 150 }}>
-          <option value="">All Approval</option>
-          <option value="true">Approved</option>
-          <option value="false">Pending</option>
+          <option value="">{t('All Approval', 'الكل')}</option>
+          <option value="true">{t('Approved', 'معتمد')}</option>
+          <option value="false">{t('Pending', 'قيد الانتظار')}</option>
         </select>
         <select className="input" value={filterActive} onChange={(e) => setFilterActive(e.target.value)} style={{ maxWidth: 130 }}>
-          <option value="">All Status</option>
-          <option value="active">Active</option>
-          <option value="suspended">Suspended</option>
+          <option value="">{t('All Status', 'كل الحالات')}</option>
+          <option value="active">{t('Active', 'نشط')}</option>
+          <option value="suspended">{t('Suspended', 'موقوف')}</option>
         </select>
         <div style={{ flex: 1 }} />
         <div style={{ display: 'flex', gap: 4, background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 3 }}>
@@ -73,11 +73,11 @@ export default function Companies() {
             </button>
           ))}
         </div>
-        <span style={{ fontSize: 13, color: 'var(--text-3)' }}>{rows.length} companies</span>
+        <span style={{ fontSize: 13, color: 'var(--text-3)' }}>{rows.length} {t('companies', 'شركة')}</span>
       </div>
 
       {isLoading ? (
-        <div className="empty-state"><div className="empty-icon">⏳</div><div className="empty-title">Loading…</div></div>
+        <div className="empty-state"><div className="empty-icon">⏳</div><div className="empty-title">{t('Loading…', 'جارٍ التحميل...')}</div></div>
       ) : view === 'grid' ? (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
           {rows.map((c: any) => (
@@ -94,7 +94,7 @@ export default function Companies() {
                     <div style={{ fontSize: 12, color: 'var(--text-3)' }}>{c.contact_phone}</div>
                   </div>
                   <span className={`badge ${c.is_approved ? 'badge-blue' : 'badge-amber'}`} style={{ fontSize: 11 }}>
-                    {c.is_approved ? 'Approved' : 'Pending'}
+                    {c.is_approved ? t('Approved', 'معتمد') : t('Pending', 'قيد الانتظار')}
                   </span>
                 </div>
                 <div style={{ display: 'flex', gap: 12, fontSize: 13, color: 'var(--text-3)', margin: '10px 0' }}>
@@ -103,29 +103,29 @@ export default function Companies() {
                   <span>👥 {c.employee_count || 0}</span>
                 </div>
                 <div style={{ display: 'flex', gap: 6, marginTop: 12 }}>
-                  <Link to={`/profile?id=${c.id}`} className="btn btn-sm btn-ghost" style={{ flex: 1, justifyContent: 'center' }}>View Profile</Link>
+                  <Link to={`/profile?id=${c.id}`} className="btn btn-sm btn-ghost" style={{ flex: 1, justifyContent: 'center' }}>{t('View Profile', 'عرض الملف')}</Link>
                   {!c.is_approved ? (
                     <button className="btn btn-sm btn-success" style={{ flex: 1, justifyContent: 'center' }}
                       onClick={() => updateMut.mutate({ id: c.id, payload: { is_approved: true } })}>
-                      ✓ Approve
+                      ✓ {t('Approve', 'موافقة')}
                     </button>
                   ) : (
                     <button className={`btn btn-sm ${c.is_active ? 'btn-danger' : 'btn-ghost'}`} style={{ flex: 1, justifyContent: 'center' }}
                       onClick={() => updateMut.mutate({ id: c.id, payload: { is_active: !c.is_active } })}>
-                      {c.is_active ? 'Suspend' : 'Activate'}
+                      {c.is_active ? t('Suspend', 'تعليق') : t('Activate', 'تفعيل')}
                     </button>
                   )}
                 </div>
               </div>
             </div>
           ))}
-          {!rows.length && <div className="empty-state" style={{ gridColumn: '1/-1' }}><div className="empty-icon">🏢</div><div className="empty-title">No companies found</div></div>}
+          {!rows.length && <div className="empty-state" style={{ gridColumn: '1/-1' }}><div className="empty-icon">🏢</div><div className="empty-title">{t('No companies found', 'لا توجد شركات')}</div></div>}
         </div>
       ) : (
         <div className="table-wrap">
           <table className="nfs">
             <thead>
-              <tr><th>Company</th><th>Contact</th><th>Rating</th><th>Jobs</th><th>Employees</th><th>Approval</th><th>Status</th><th>Actions</th></tr>
+              <tr><th>{t('Company', 'الشركة')}</th><th>{t('Contact', 'التواصل')}</th><th>{t('Rating', 'التقييم')}</th><th>{t('Jobs', 'المشاريع')}</th><th>{t('Employees', 'الموظفون')}</th><th>{t('Approval', 'الموافقة')}</th><th>{t('Status', 'الحالة')}</th><th>{t('Actions', 'إجراءات')}</th></tr>
             </thead>
             <tbody>
               {rows.map((c: any) => (
@@ -145,28 +145,28 @@ export default function Companies() {
                   <td style={{ fontWeight: 600 }}>{c.rating ? `⭐ ${Number(c.rating).toFixed(1)}` : '—'}</td>
                   <td>{c.completed_jobs || 0}</td>
                   <td>{c.employee_count || 0}</td>
-                  <td><span className={`badge ${c.is_approved ? 'badge-blue' : 'badge-amber'}`}>{c.is_approved ? '✓ Approved' : '⏳ Pending'}</span></td>
-                  <td><span className={`badge ${c.is_active ? 'badge-green' : 'badge-gray'}`}>{c.is_active ? '● Active' : '○ Suspended'}</span></td>
+                  <td><span className={`badge ${c.is_approved ? 'badge-blue' : 'badge-amber'}`}>{c.is_approved ? `✓ ${t('Approved', 'معتمد')}` : `⏳ ${t('Pending', 'قيد الانتظار')}`}</span></td>
+                  <td><span className={`badge ${c.is_active ? 'badge-green' : 'badge-gray'}`}>{c.is_active ? `● ${t('Active', 'نشط')}` : `○ ${t('Suspended', 'موقوف')}`}</span></td>
                   <td style={{ whiteSpace: 'nowrap' }}>
-                    <Link to={`/profile?id=${c.id}`} className="btn btn-sm btn-ghost">Profile</Link>
+                    <Link to={`/profile?id=${c.id}`} className="btn btn-sm btn-ghost">{t('Profile', 'الملف')}</Link>
                     {' '}
                     {!c.is_approved && (
                       <button className="btn btn-sm btn-success"
                         onClick={() => updateMut.mutate({ id: c.id, payload: { is_approved: true } })}>
-                        ✓ Approve
+                        ✓ {t('Approve', 'موافقة')}
                       </button>
                     )}
                     {' '}
                     <button className={`btn btn-sm ${c.is_active ? 'btn-danger' : 'btn-ghost'}`}
                       onClick={() => updateMut.mutate({ id: c.id, payload: { is_active: !c.is_active } })}>
-                      {c.is_active ? 'Suspend' : 'Activate'}
+                      {c.is_active ? t('Suspend', 'تعليق') : t('Activate', 'تفعيل')}
                     </button>
                   </td>
                 </tr>
               ))}
               {!rows.length && (
                 <tr><td colSpan={8}>
-                  <div className="empty-state"><div className="empty-icon">🏢</div><div className="empty-title">No companies found</div></div>
+                  <div className="empty-state"><div className="empty-icon">🏢</div><div className="empty-title">{t('No companies found', 'لا توجد شركات')}</div></div>
                 </td></tr>
               )}
             </tbody>
